@@ -71,7 +71,7 @@ final_Product:   .word     0
 asmUnpack:   
     
     /*** STUDENTS: Place your asmUnpack code BELOW this line!!! **************/
-
+    push {r4-r11, lr}
     // copy r0 to a new register (r4) and (r5)
     mov r4, r0
     mov r5, r0
@@ -88,6 +88,7 @@ asmUnpack:
     str r5, [r2]
     
     // go back to asmMain function call
+    pop {r4-r11, lr}
     bx lr
     
     /*** STUDENTS: Place your asmUnpack code ABOVE this line!!! **************/
@@ -111,7 +112,7 @@ asmUnpack:
  */
 asmAbs:  
     /*** STUDENTS: Place your asmAbs code BELOW this line!!! **************/
-    
+    push {r4-r11, lr}
     // copy c0 to a new register (r4) and r5 to be used later
     mov r4, r0
     mov r5, r0
@@ -133,6 +134,7 @@ asmAbs:
     // store sign bit to address (r2)
     str r5, [r2]
     // return back to asmMain function call
+    pop {r4-r11, lr}
     bx lr
 
     /*** STUDENTS: Place your asmAbs code ABOVE this line!!! **************/
@@ -149,7 +151,7 @@ asmAbs:
 asmMult:   
 
     /*** STUDENTS: Place your asmMult code BELOW this line!!! **************/
-
+    push {r4-r11, lr}
     // copy a_multiplicand to r4 and b_multiplier to r5
     mov r4, r0
     mov r5, r1
@@ -176,6 +178,7 @@ adding:        // responsible for adding to the product result
 store:        // put product to r0
     mov r0, r8
     // return to asmMain function call
+    pop {r4-r11, lr}
     bx lr
 
     /*** STUDENTS: Place your asmMult code ABOVE this line!!! **************/
@@ -197,7 +200,7 @@ store:        // put product to r0
 asmFixSign:   
     
     /*** STUDENTS: Place your asmFixSign code BELOW this line!!! **************/
-
+    push {r4-r11, lr}
     // check if final result should be negative
     eor r4, r1, r2
     cmp r4, #1
@@ -212,6 +215,7 @@ neg_prod:
     
 fix_sign_end:
     // return back to function call in asmMain
+    pop {r4-r11, lr}
     bx lr
     
     
@@ -242,7 +246,7 @@ asmMain:
     // initial push and pop
     push {r4-r11, lr}
     pop {r4-r11, lr}
-    bx lr
+    //bx lr
     
     /* Step 1:
      * call asmUnpack. Have it store the output values in 
@@ -256,8 +260,10 @@ asmMain:
     ldr r1, =a_Multiplicand
     ldr r2, =b_Multiplier
     
+    //push {r0-r2}
     // call asmUnpack
     bl asmUnpack
+    //pop {r0-r2}
     
     // remove from stack
     //pop {r4-r11, lr}
@@ -278,9 +284,10 @@ asmMain:
     ldr r1, =a_Abs		// address for a_Abs
     ldr r2, =a_Sign		// address for a_Sign
     
+    //push {r0-r2}
     // call asmAbs
     bl asmAbs
-    
+    //pop {r0-r2}
     // remove from stack
     //pop {r4-r11, lr}
     //bx lr
@@ -300,9 +307,10 @@ asmMain:
     ldr r1, =b_Abs		// address for a_Abs
     ldr r2, =b_Sign		// address for a_Sign
     
+    //push {r0-r2}
     // call asmAbs
     bl asmAbs
-    
+    //pop {r0-r2}
     // remove from stack
     //pop {r4-r11, lr}
     //bx lr
@@ -326,11 +334,13 @@ asmMain:
     ldr r1, [r1]
     
     // call asmMult
+    //push {r0-r1}
     bl asmMult
     
     // store value to init_Product
     ldr r11, =init_Product
     str r0, [r11]
+    //pop {r0-r1}
     
     // remove from stack
     //pop {r4-r11, lr}
@@ -356,12 +366,14 @@ asmMain:
     ldr r2, =b_Sign
     ldr r2, [r2]
     
+    //push {r0-r2}
     // call asmFixSign
     bl asmFixSign
     
     // store value to final_Product
     ldr r11, =final_Product
     str r0, [r11]
+    //pop {r0-r2}
     
     // remove from stack
     pop {r4-r11, lr}
