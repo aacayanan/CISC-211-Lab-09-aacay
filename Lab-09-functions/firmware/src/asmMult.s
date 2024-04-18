@@ -246,51 +246,34 @@ asmMain:
     // initial push and pop
     push {r4-r11, lr}
     pop {r4-r11, lr}
-    //bx lr
     
     /* Step 1:
      * call asmUnpack. Have it store the output values in 
      * a_Multiplicand and b_Multiplier.
      */
     
-    // call asmUnpack by calling function on the stack
     push {r4-r11, lr}
     
     // load addresses to input variable registers
     ldr r1, =a_Multiplicand
     ldr r2, =b_Multiplier
     
-    //push {r0-r2}
     // call asmUnpack
     bl asmUnpack
-    //pop {r0-r2}
     
-    // remove from stack
-    //pop {r4-r11, lr}
-    //bx lr
-
-
     /* Step 2a:
      * call asmAbs for the multiplicand (A). Have it store the
      * absolute value in a_Abs, and the sign in a_Sign.
      */
 
-    // call asmAbs for multiplicand A to the stack
-    //push {r4-r11, lr}
-    
     // load input variables
     ldr r0, =a_Multiplicand	// multiplicand value
     ldr r0, [r0]
     ldr r1, =a_Abs		// address for a_Abs
     ldr r2, =a_Sign		// address for a_Sign
     
-    //push {r0-r2}
     // call asmAbs
     bl asmAbs
-    //pop {r0-r2}
-    // remove from stack
-    //pop {r4-r11, lr}
-    //bx lr
 
 
     /* Step 2b:
@@ -298,22 +281,14 @@ asmMain:
      * absolute value in b_Abs, and the sign in b_Sign.
      */
     
-    // call asmAbs for multiplier B to the stack
-    //push {r4-r11, lr}
-    
     // load input variables
     ldr r0, =b_Multiplier	// multiplicand value
     ldr r0, [r0]
     ldr r1, =b_Abs		// address for a_Abs
     ldr r2, =b_Sign		// address for a_Sign
-    
-    //push {r0-r2}
-    // call asmAbs
+
+    // branch to asmAbs subroutine
     bl asmAbs
-    //pop {r0-r2}
-    // remove from stack
-    //pop {r4-r11, lr}
-    //bx lr
 
 
     /* Step 3:
@@ -324,9 +299,6 @@ asmMain:
      * init_Product.
      */
 
-    // call asmMult to the stack
-    //push {r4-r11, lr}
-
     // load input variables
     ldr r0, =a_Abs	// abs value of multiplicand (a)
     ldr r0, [r0]
@@ -334,17 +306,11 @@ asmMain:
     ldr r1, [r1]
     
     // call asmMult
-    //push {r0-r1}
     bl asmMult
     
     // store value to init_Product
     ldr r11, =init_Product
     str r0, [r11]
-    //pop {r0-r1}
-    
-    // remove from stack
-    //pop {r4-r11, lr}
-    //bx lr
 
     /* Step 4:
      * call asmFixSign. Pass in the initial product, and the
@@ -355,9 +321,6 @@ asmMain:
      * final_Product.
      */
     
-    // call asmFixSign to stack
-    //push {r4-r11, lr}
-    
     // load input variables
     // load sign bit for A
     ldr r1, =a_Sign
@@ -366,18 +329,12 @@ asmMain:
     ldr r2, =b_Sign
     ldr r2, [r2]
     
-    //push {r0-r2}
     // call asmFixSign
     bl asmFixSign
     
     // store value to final_Product
     ldr r11, =final_Product
     str r0, [r11]
-    //pop {r0-r2}
-    
-    // remove from stack
-    pop {r4-r11, lr}
-    bx lr
 
 
     /* Step 5:
@@ -386,9 +343,10 @@ asmMain:
      * 2) the final answer is stored in r0, so that the C call
      *    can access it.
      */
-
-
-
+    
+    // remove from stack
+    pop {r4-r11, lr}
+    bx lr
     
     /*** STUDENTS: Place your asmMain code ABOVE this line!!! **************/
 
